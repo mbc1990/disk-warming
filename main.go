@@ -29,5 +29,6 @@ func main() {
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	tc := NewTwitterClient(conf.TwitterConsumerKey, conf.TwitterConsumerSecret)
+	d := NewDiskBot(&conf)
+	d.Start()
 }
