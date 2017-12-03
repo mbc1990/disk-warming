@@ -13,6 +13,8 @@ func (d *DiskBot) Start() {
 	// TODO: Pick one at random to reply to
 	// TODO: Create tweet body with image
 	// TODO: Send tweet
+	resp := d.TwitterClient.GetTweetsForHashtag("globe")
+	fmt.Println(resp)
 }
 
 func NewDiskBot(conf *Configuration) *DiskBot {

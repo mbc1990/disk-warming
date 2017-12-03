@@ -5,6 +5,7 @@ import "encoding/json"
 import "net/http"
 import "io/ioutil"
 import "bytes"
+import "fmt"
 
 // Make twitter api calls
 type TwitterClient struct {
@@ -16,7 +17,6 @@ type TwitterClient struct {
 }
 
 // Single tweet
-/*
 type Tweet struct {
 	Created_at string
 	Text       string
@@ -28,11 +28,32 @@ type Tweet struct {
 		}
 	}
 }
-*/
 
 type AuthResponse struct {
 	Token_type   string
 	Access_token string
+}
+
+type SearchResponse struct {
+	Statuses []Tweet
+}
+
+func (tc *TwitterClient) GetTweetsForHashtag(hashtag string) []Tweet {
+	url := "https://api.twitter.com/1.1/search/tweets.json?q=%23globalwarming"
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("Authorization", "Bearer "+tc.bearerToken)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8.")
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	searchResponse := new(SearchResponse)
+	json.Unmarshal(body, &searchResponse)
+	return searchResponse.Statuses
 }
 
 // Gets a bearer token for app-only authentication and sets it on the receiver struct
